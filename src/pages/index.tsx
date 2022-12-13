@@ -14,7 +14,6 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <h1>jotai test</h1>
         <Posts />
       </main>
 

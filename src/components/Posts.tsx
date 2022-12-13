@@ -1,6 +1,7 @@
 import { useAtom } from 'jotai/react';
 import { atom, PrimitiveAtom } from 'jotai/vanilla';
 import { splitAtom } from 'jotai/vanilla/utils';
+import { nanoid } from 'nanoid';
 import React from 'react';
 
 type PostType = {
@@ -8,7 +9,7 @@ type PostType = {
   title: string;
   content: string;
   datePublished: string;
-  dateUpdated: string;
+  dateUpdated?: string;
 };
 
 const INITIAL_POSTS = [
@@ -22,7 +23,7 @@ const INITIAL_POSTS = [
     id: '2',
     title: 'aaa',
     content: 'bbb',
-    datePublished: '2022-12-8T01:39:31.207Z',
+    datePublished: '2022-12-08T01:39:31.207Z',
   },
 ] as PostType[];
 
@@ -30,10 +31,63 @@ const postsAtom = atom(INITIAL_POSTS);
 
 const postAtomsAtom = splitAtom(postsAtom);
 
+const titleAtom = atom('');
+const contentAtom = atom('');
+const createAtom = atom(
+  (get) => !!get(titleAtom) && !!get(contentAtom),
+  (get, set) => {
+    const title = get(titleAtom);
+    const content = get(contentAtom);
+    if (title && content) {
+      const newPost: PostType = {
+        id: nanoid(),
+        title,
+        content,
+        datePublished: new Date().toISOString(),
+      };
+      set(postsAtom, (prev) => [...prev, newPost]);
+      set(titleAtom, '');
+      set(contentAtom, '');
+    }
+  }
+);
+
+const PostEditor = () => {
+  const [title, setTitle] = useAtom(titleAtom);
+  const [content, setContent] = useAtom(contentAtom);
+  const [enableCreate, createPost] = useAtom(createAtom);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div>
+          <span>Post Title: </span>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+        <div>
+          <span>Post Content: </span>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <button disabled={!enableCreate} onClick={createPost}>
+          Create
+        </button>
+      </div>
+    </div>
+  );
+};
+
 type PostProps = {
   postAtom: PrimitiveAtom<PostType>;
 };
-
 const Post = ({ postAtom }: PostProps) => {
   const [post] = useAtom(postAtom);
   return (
@@ -53,6 +107,7 @@ const Posts = () => {
   return (
     <>
       <h1>Posts</h1>
+      <PostEditor />
       {postAtoms.map((postAtom) => {
         return <Post key={`${postAtom}`} postAtom={postAtom} />;
       })}
