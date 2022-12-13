@@ -14,10 +14,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <h2>jotai test</h2>
-        {/* <Todos /> */}
-        {/* <Counter />
-        <DoubleCounter /> */}
+        <h1>jotai test</h1>
         <Posts />
       </main>
 

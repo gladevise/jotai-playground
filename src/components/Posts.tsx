@@ -1,4 +1,6 @@
-import { atom, useAtom } from 'jotai';
+import { useAtom } from 'jotai/react';
+import { atom, PrimitiveAtom } from 'jotai/vanilla';
+import { splitAtom } from 'jotai/vanilla/utils';
 import React from 'react';
 
 type PostType = {
@@ -26,11 +28,14 @@ const INITIAL_POSTS = [
 
 const postsAtom = atom(INITIAL_POSTS);
 
+const postAtomsAtom = splitAtom(postsAtom);
+
 type PostProps = {
-  post: PostType;
+  postAtom: PrimitiveAtom<PostType>;
 };
 
-const Post = ({ post }: PostProps) => {
+const Post = ({ postAtom }: PostProps) => {
+  const [post] = useAtom(postAtom);
   return (
     <div>
       <h2>{post.title}</h2>
@@ -44,12 +49,12 @@ const Post = ({ post }: PostProps) => {
 };
 
 const Posts = () => {
-  const [posts] = useAtom(postsAtom);
+  const [postAtoms] = useAtom(postAtomsAtom);
   return (
     <>
       <h1>Posts</h1>
-      {posts.map((post) => {
-        return <Post key={post.id} post={post} />;
+      {postAtoms.map((postAtom) => {
+        return <Post key={`${postAtom}`} postAtom={postAtom} />;
       })}
     </>
   );
