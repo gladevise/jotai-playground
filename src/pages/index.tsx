@@ -1,4 +1,4 @@
-import Todos from '@/components/Todos';
+import Posts from '@/components/Posts';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -15,7 +15,10 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h2>jotai test</h2>
-        <Todos />
+        {/* <Todos /> */}
+        {/* <Counter />
+        <DoubleCounter /> */}
+        <Posts />
       </main>
 
       <footer className={styles.footer}>
