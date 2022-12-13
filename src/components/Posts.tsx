@@ -1,7 +1,8 @@
 import { atom, useAtom } from 'jotai';
 import React from 'react';
 
-type Post = {
+type PostType = {
+  id: string;
   title: string;
   content: string;
   datePublished: string;
@@ -10,22 +11,37 @@ type Post = {
 
 const INITIAL_POSTS = [
   {
+    id: '1',
     title: 'foo',
     content: 'lorem',
     datePublished: '2022-12-13T01:39:31.207Z',
   },
   {
+    id: '2',
     title: 'aaa',
     content: 'bbb',
     datePublished: '2022-12-8T01:39:31.207Z',
   },
-] as Post[];
+] as PostType[];
 
 const postsAtom = atom(INITIAL_POSTS);
 
-// const Post = () => {
+type PostProps = {
+  post: PostType;
+};
 
-// }
+const Post = ({ post }: PostProps) => {
+  return (
+    <div>
+      <h2>{post.title}</h2>
+      <p>{post.content}</p>
+      <div>
+        <span>{post.datePublished}</span>
+        <span>{post?.dateUpdated}</span>
+      </div>
+    </div>
+  );
+};
 
 const Posts = () => {
   const [posts] = useAtom(postsAtom);
@@ -33,16 +49,7 @@ const Posts = () => {
     <>
       <h1>Posts</h1>
       {posts.map((post) => {
-        return (
-          <div key={post.title}>
-            <h2>{post.title}</h2>
-            <p>{post.content}</p>
-            <div>
-              <span>{post.datePublished}</span>
-              <span>{post?.dateUpdated}</span>
-            </div>
-          </div>
-        );
+        return <Post key={post.id} post={post} />;
       })}
     </>
   );
