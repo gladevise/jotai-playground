@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useAtom } from 'jotai/react';
 import { atom, PrimitiveAtom } from 'jotai/vanilla';
 import { splitAtom } from 'jotai/vanilla/utils';
@@ -12,7 +13,7 @@ type PostType = {
   dateUpdated?: string;
 };
 
-const INITIAL_POSTS = [
+const INITIAL_POSTS: PostType[] = [
   {
     id: '1',
     title: 'foo',
@@ -24,8 +25,9 @@ const INITIAL_POSTS = [
     title: 'aaa',
     content: 'bbb',
     datePublished: '2022-12-08T01:39:31.207Z',
+    dateUpdated: '2022-12-11T21:39:31.207Z',
   },
-] as PostType[];
+];
 
 const postsAtom = atom(INITIAL_POSTS);
 
@@ -90,13 +92,25 @@ type PostProps = {
 };
 const Post = ({ postAtom }: PostProps) => {
   const [post] = useAtom(postAtom);
+  const datePublished = dayjs(post.datePublished).format('YYYY-MM-DD HH:mm:ss');
+  const dateUpdated = post?.dateUpdated
+    ? dayjs(post?.dateUpdated).format('YYYY-MM-DD HH:mm:ss')
+    : undefined;
   return (
     <div>
       <h2>{post.title}</h2>
       <p>{post.content}</p>
       <div>
-        <span>{post.datePublished}</span>
-        <span>{post?.dateUpdated}</span>
+        <div>
+          <span>Published At: </span>
+          <span>{datePublished}</span>
+        </div>
+        {dateUpdated && (
+          <div>
+            <span>Updated At: </span>
+            <span>{dateUpdated}</span>
+          </div>
+        )}
       </div>
     </div>
   );
