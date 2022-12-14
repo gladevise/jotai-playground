@@ -65,6 +65,26 @@ export const createAtom = atom(
   }
 );
 
+export const updateAtom = atom(
+  (get) => !!get(titleAtom) && !!get(contentAtom) && !!get(selectedPostAtom),
+  (get, set) => {
+    const title = get(titleAtom);
+    const content = get(contentAtom);
+    const selected = get(selectedPostAtom);
+    if (title && content && selected) {
+      const selectedPost = get(selected);
+      const updatedPost: PostType = {
+        id: selectedPost.id,
+        title,
+        content,
+        datePublished: selectedPost.datePublished,
+        dateUpdated: new Date().toISOString(),
+      };
+      set(selected, updatedPost);
+    }
+  }
+);
+
 export const deleteAtom = atom(
   null,
   (get, set, selectedAtom: PrimitiveAtom<PostType>) => {

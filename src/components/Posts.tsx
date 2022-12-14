@@ -10,12 +10,14 @@ import {
   PostType,
   selectedPostAtom,
   titleAtom,
+  updateAtom,
 } from './postAtoms';
 
 const PostEditor = () => {
   const [title, setTitle] = useAtom(titleAtom);
   const [content, setContent] = useAtom(contentAtom);
   const [enableCreate, createPost] = useAtom(createAtom);
+  const [enableUpdate, updatePost] = useAtom(updateAtom);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -36,9 +38,12 @@ const PostEditor = () => {
           />
         </div>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
         <button disabled={!enableCreate} onClick={createPost}>
           Create
+        </button>
+        <button disabled={!enableUpdate} onClick={updatePost}>
+          Update
         </button>
       </div>
     </div>
