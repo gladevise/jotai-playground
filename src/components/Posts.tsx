@@ -54,6 +54,10 @@ const createAtom = atom(
   }
 );
 
+const deleteAtom = atom(null, (get, set, postId: string) => {
+  set(postsAtom, (prev) => prev.filter((post) => post.id !== postId));
+});
+
 const PostEditor = () => {
   const [title, setTitle] = useAtom(titleAtom);
   const [content, setContent] = useAtom(contentAtom);
@@ -92,6 +96,8 @@ type PostProps = {
 };
 const Post = ({ postAtom }: PostProps) => {
   const [post] = useAtom(postAtom);
+  const [, deletePost] = useAtom(deleteAtom);
+
   const datePublished = dayjs(post.datePublished).format('YYYY-MM-DD HH:mm:ss');
   const dateUpdated = post?.dateUpdated
     ? dayjs(post?.dateUpdated).format('YYYY-MM-DD HH:mm:ss')
@@ -112,6 +118,7 @@ const Post = ({ postAtom }: PostProps) => {
           </div>
         )}
       </div>
+      <button onClick={() => deletePost(post.id)}>Delete</button>
     </div>
   );
 };
