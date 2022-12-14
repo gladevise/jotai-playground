@@ -54,9 +54,15 @@ const createAtom = atom(
   }
 );
 
-const deleteAtom = atom(null, (get, set, postId: string) => {
-  set(postsAtom, (prev) => prev.filter((post) => post.id !== postId));
-});
+const deleteAtom = atom(
+  null,
+  (get, set, selectedAtom: PrimitiveAtom<PostType>) => {
+    const selectedPost = get(selectedAtom);
+    set(postsAtom, (prev) =>
+      prev.filter((post) => post.id !== selectedPost.id)
+    );
+  }
+);
 
 const PostEditor = () => {
   const [title, setTitle] = useAtom(titleAtom);
@@ -118,7 +124,7 @@ const Post = ({ postAtom }: PostProps) => {
           </div>
         )}
       </div>
-      <button onClick={() => deletePost(post.id)}>Delete</button>
+      <button onClick={() => deletePost(postAtom)}>Delete</button>
     </div>
   );
 };
