@@ -86,11 +86,14 @@ export const updateAtom = atom(
 );
 
 export const deleteAtom = atom(
-  null,
-  (get, set, selectedAtom: PrimitiveAtom<PostType>) => {
-    const selectedPost = get(selectedAtom);
-    set(postsAtom, (prev) =>
-      prev.filter((post) => post.id !== selectedPost.id)
-    );
+  (get) => !!get(selectedPostAtom),
+  (get, set) => {
+    const selected = get(selectedPostAtom);
+    if (selected) {
+      const selectedPost = get(selected);
+      set(postsAtom, (prev) =>
+        prev.filter((post) => post.id !== selectedPost.id)
+      );
+    }
   }
 );

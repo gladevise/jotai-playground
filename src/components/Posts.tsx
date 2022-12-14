@@ -18,6 +18,7 @@ const PostEditor = () => {
   const [content, setContent] = useAtom(contentAtom);
   const [enableCreate, createPost] = useAtom(createAtom);
   const [enableUpdate, updatePost] = useAtom(updateAtom);
+  const [enableDelete, deletePost] = useAtom(deleteAtom);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -45,6 +46,9 @@ const PostEditor = () => {
         <button disabled={!enableUpdate} onClick={updatePost}>
           Update
         </button>
+        <button disabled={!enableDelete} onClick={deletePost}>
+          Delete
+        </button>
       </div>
     </div>
   );
@@ -55,7 +59,6 @@ type PostProps = {
 };
 const Post = ({ postAtom }: PostProps) => {
   const [post] = useAtom(postAtom);
-  const [, deletePost] = useAtom(deleteAtom);
   const [selected, setSelected] = useAtom(
     useMemo(
       () =>
@@ -92,7 +95,6 @@ const Post = ({ postAtom }: PostProps) => {
           </div>
         )}
       </div>
-      <button onClick={() => deletePost(postAtom)}>Delete</button>
     </div>
   );
 };
