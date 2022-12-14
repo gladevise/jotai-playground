@@ -32,6 +32,20 @@ export const postAtomsAtom = splitAtom(postsAtom);
 
 export const titleAtom = atom('');
 export const contentAtom = atom('');
+
+const baseSelectedPostAtom = atom<PrimitiveAtom<PostType> | null>(null);
+export const selectedPostAtom = atom(
+  (get) => get(baseSelectedPostAtom),
+  (get, set, postItemAtom: PrimitiveAtom<PostType> | null) => {
+    set(baseSelectedPostAtom, postItemAtom);
+    if (postItemAtom) {
+      const postItem = get(postItemAtom);
+      set(titleAtom, postItem.title);
+      set(contentAtom, postItem.content);
+    }
+  }
+);
+
 export const createAtom = atom(
   (get) => !!get(titleAtom) && !!get(contentAtom),
   (get, set) => {

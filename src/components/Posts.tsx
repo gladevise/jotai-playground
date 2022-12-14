@@ -1,15 +1,14 @@
 import dayjs from 'dayjs';
 import { useAtom } from 'jotai/react';
 import { atom, PrimitiveAtom } from 'jotai/vanilla';
-import { splitAtom } from 'jotai/vanilla/utils';
-import { nanoid } from 'nanoid';
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   contentAtom,
   createAtom,
   deleteAtom,
   postAtomsAtom,
   PostType,
+  selectedPostAtom,
   titleAtom,
 } from './postAtoms';
 
@@ -52,13 +51,28 @@ type PostProps = {
 const Post = ({ postAtom }: PostProps) => {
   const [post] = useAtom(postAtom);
   const [, deletePost] = useAtom(deleteAtom);
+  const [selected, setSelected] = useAtom(
+    useMemo(
+      () =>
+        atom(
+          (get) => get(selectedPostAtom) === postAtom,
+          (_get, set) => set(selectedPostAtom, postAtom)
+        ),
+      [postAtom]
+    )
+  );
 
   const datePublished = dayjs(post.datePublished).format('YYYY-MM-DD HH:mm:ss');
   const dateUpdated = post?.dateUpdated
     ? dayjs(post?.dateUpdated).format('YYYY-MM-DD HH:mm:ss')
     : undefined;
   return (
-    <div>
+    <div
+      onClick={setSelected}
+      style={{
+        backgroundColor: selected ? 'lightblue' : 'white',
+      }}
+    >
       <h2>{post.title}</h2>
       <p>{post.content}</p>
       <div>
